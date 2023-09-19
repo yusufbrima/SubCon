@@ -1,0 +1,16 @@
+{
+    "dataset": {
+        "basepath": "/net/projects/scratch/summer/valid_until_31_January_2024/ybrima/data/learning/Disentanglement",
+        "type": "images",
+        "format": "file"
+    },
+    "reporting": {
+        "figpath": "./Figures",
+        "data": "./Data",
+        "Model": "./Model"
+    },
+    "logging": {
+        "log_level": "INFO",
+        "log_file": "app.log"
+    }
+}
