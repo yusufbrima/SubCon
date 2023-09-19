@@ -1,12 +1,26 @@
-# Creating a Conda Environment from a YAML File
+#
+
+## Sample Images
+
+![Alt Text](Figures/output_figure.png)
+
+## Conditioning on  shape type generative factor
+
+![Alt Text](Figures/output.gif)
+
+## Conditioning on floor hue
+
+![Alt Text](Figures/floor_hue.gif)
+
+## Creating a Conda Environment from a YAML File
 
 In this guide, we'll walk you through the process of creating a Conda environment from a YAML file. This is useful for sharing or recreating environments with specific package dependencies.
 
-## Prerequisites
+### Prerequisites
 
 - [Conda](https://docs.conda.io/en/latest/) is installed on your system.
 
-## Steps
+#### Steps
 
 1. **Activate Conda**: Open your terminal and activate Conda if it's not already active. Replace `your_environment_name` with the desired environment name.
 
