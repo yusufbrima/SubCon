@@ -7,7 +7,7 @@
     "reporting": {
         "figpath": "./Figures",
         "data": "./Data",
-        "Model": "./Model"
+        "model": "/net/projects/scratch/summer/valid_until_31_January_2024/ybrima/data/Models/SubspaceLearning"
     },
     "logging": {
         "log_level": "INFO",

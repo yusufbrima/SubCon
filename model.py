@@ -28,7 +28,13 @@ class CNNEncoder(nn.Module):
 
         # Use a  backbone model
         self.backbone = backbone_model(weights=None)
-
+        # Modify the first convolutional layer to accept 1 input channel
+        if 'resnet' in str(backbone_model):
+            self.backbone.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        elif 'densenet' in str(backbone_model):
+            self.backbone.features.conv0 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+        else:
+            raise ValueError("Unsupported backbone model")
         # Determine the number of features in the final layer
         if 'resnet' in str(backbone_model):
             num_features = self.backbone.fc.in_features

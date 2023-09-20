@@ -3,6 +3,16 @@ import numpy as np
 import torch
 from PIL import Image
 from tqdm import tqdm  # Import the tqdm module
+import json 
+from pathlib import Path
+
+with open('config.json') as json_file:
+    config = json.load(json_file)
+    data_folder = Path(config['dataset']['basepath'])
+
+    fig_path =  Path(config['reporting']['figpath'])
+    result_path = Path(config['reporting']['data'])
+    model_path = Path(config['reporting']['model'])
 
 def show_images_grid(imgs_, num_images=25, save_path=None):
     """
@@ -47,70 +57,80 @@ def show_images_grid(imgs_, num_images=25, save_path=None):
     # Show the figure
     plt.show()
 
-def train_model(model, train_loader, criterion, optimizer, num_epochs=10, device='cuda', dim=-2, print_freq=1000):
-    """
-    Train a PyTorch model.
+def train_loop(model, trainloader, valloader, criterion, optimizer, device, num_epochs=10):
+    # Initialize lists to store training and validation losses
+    train_losses = []
+    val_losses = []
 
-    Args:
-        model (nn.Module): The PyTorch model to be trained.
-        train_loader (DataLoader): DataLoader for the training dataset.
-        criterion (nn.Module): Loss function to optimize.
-        optimizer (torch.optim.Optimizer): Optimization algorithm.
-        num_epochs (int): Number of training epochs (default: 10).
-        device (str): Device to use for training ('cuda' or 'cpu', default: 'cuda').
-        dim (int): Dimension for the labels (default: -2).
-        print_freq (int): Frequency (in steps) to print and store the loss (default: 1000).
-
-    Returns:
-        model (nn.Module): Trained model.
-        epoch_history (list): List of epoch numbers.
-        loss_history (list): List of loss values corresponding to each epoch.
-        step_loss_history (list): List of loss values corresponding to each print frequency.
-    """
-    model.to(device)
-    model.train()  # Set the model in training mode
-
-    epoch_history = []
-    loss_history = []
-    step_loss_history = []  # To store losses at each print frequency
-
+    # Training loop
     for epoch in range(num_epochs):
-        running_loss = 0.0
+        # Set model to training mode
+        model.train()
 
-        # Wrap the train_loader with tqdm to add a progress bar
-        for step, (inputs, labels) in enumerate(tqdm(train_loader), 1):
-            inputs, labels = inputs.to(device), labels.to(device)
+        # Initialize variables to track training loss for this epoch
+        running_train_loss = 0.0
+        num_train_batches = 0
 
-            # Zero the gradients
+        for batch_idx, (inputs, labels) in enumerate(trainloader):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
+            # Zero the parameter gradients
             optimizer.zero_grad()
 
             # Forward pass
             outputs = model(inputs)
-
-            # Compute the loss
-            loss = criterion(outputs, labels[:, dim].to(torch.long))
-
+            
+            # Calculate the loss
+            loss = criterion(outputs, labels[:,-2].to(torch.long))
+            
             # Backpropagation and optimization
             loss.backward()
             optimizer.step()
 
-            running_loss += loss.item()
+            # Update the running loss
+            running_train_loss += loss.item()
+            num_train_batches += 1
 
-            if step % print_freq == 999:
-                step_loss = running_loss / print_freq
-                step_loss_history.append(step_loss)
-                tqdm.write(f'Step {step}/{len(train_loader)}, Loss: {step_loss:.4f}')
-                running_loss = 0.0
+            # Print progress message every, say, 100 batches
+            if (batch_idx + 1) % 100 == 0:
+                print(f"Epoch [{epoch + 1}/{num_epochs}] - Batch [{batch_idx + 1}/{len(trainloader)}] - "
+                      f"Train Loss: {loss.item():.4f}")
 
-        # Print epoch statistics
-        epoch_loss = running_loss / len(train_loader)
-        tqdm.write(f'Epoch {epoch + 1}/{num_epochs}, Loss: {epoch_loss}')
+        # Calculate the average training loss for this epoch
+        epoch_train_loss = running_train_loss / num_train_batches
+        train_losses.append(epoch_train_loss)
+        torch.save(model.state_dict(), model_path/'model.pt')
+        # Validation loop
+        model.eval()  # Set model to evaluation mode
+        running_val_loss = 0.0
+        num_val_batches = 0
 
-        epoch_history.append(epoch + 1)
-        loss_history.append(epoch_loss)
+        with torch.no_grad():
+            for inputs, labels in valloader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
 
-    print('Training complete!')
-    return model, epoch_history, loss_history, step_loss_history
+                # Forward pass
+                outputs = model(inputs)
+
+                # Calculate the loss
+                loss = criterion(outputs, labels[:,-2].to(torch.long))
+
+                # Update the running validation loss
+                running_val_loss += loss.item()
+                num_val_batches += 1
+
+        # Calculate the average validation loss for this epoch
+        epoch_val_loss = running_val_loss / num_val_batches
+        val_losses.append(epoch_val_loss)
+        
+        # Print the training and validation loss for this epoch
+        print(f"Epoch [{epoch + 1}/{num_epochs}] - Train Loss: {epoch_train_loss:.4f}, Val Loss: {epoch_val_loss:.4f}")
+
+    print("Training completed.")
+
+    return model,train_losses, val_losses
 
 def create_gif_from_dataset(dataset, batch_size, fixed_factor_str, fixed_factor_value, output_filename):
     """
