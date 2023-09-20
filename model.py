@@ -16,7 +16,7 @@ class CNNEncoder(nn.Module):
         fc (torch.nn.Linear): Linear layer to reduce dimensions to the specified latent_dim.
     """
 
-    def __init__(self, backbone_model, latent_dim):
+    def __init__(self, backbone_model, latent_dim, input_shape = 1):
         """
         Initializes the CNN encoder.
 
@@ -30,9 +30,9 @@ class CNNEncoder(nn.Module):
         self.backbone = backbone_model(weights=None)
         # Modify the first convolutional layer to accept 1 input channel
         if 'resnet' in str(backbone_model):
-            self.backbone.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+            self.backbone.conv1 = nn.Conv2d(input_shape, 64, kernel_size=7, stride=2, padding=3, bias=False)
         elif 'densenet' in str(backbone_model):
-            self.backbone.features.conv0 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+            self.backbone.features.conv0 = nn.Conv2d(input_shape, 64, kernel_size=7, stride=2, padding=3, bias=False)
         else:
             raise ValueError("Unsupported backbone model")
         # Determine the number of features in the final layer

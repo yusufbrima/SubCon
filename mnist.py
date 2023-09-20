@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # Example usage with ResNet-50 as the backbone and latent_dim=128
     latent_dim = 32
-    resnet50_encoder = CNNEncoder(models.resnet50, latent_dim).to(device)
+    resnet50_encoder = CNNEncoder(models.resnet50,latent_dim  = latent_dim, input_shape= 1).to(device)
 
 
     # num_classes =  dataset._NUM_VALUES_PER_FACTOR['shape']
