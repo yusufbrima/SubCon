@@ -12,6 +12,7 @@ from model import CNNEncoder
 from loss import BatchAllTtripletLoss
 import pandas as pd
 from main import train_loop
+from sklearn.manifold import TSNE
 
 # set device 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -35,10 +36,12 @@ if __name__ == "__main__":
 
     # Load the MNIST training dataset
     train_dataset = datasets.MNIST(root=data_folder/'data', train=True, transform=transform, download=True)
+    val_dataset = datasets.MNIST(root=data_folder/'data', train=False, transform=transform, download=True)
 
     # Create a DataLoader for the training dataset
     batch_size = 64  # You can adjust this batch size
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
 
 
@@ -55,16 +58,15 @@ if __name__ == "__main__":
     criterion = BatchAllTtripletLoss() 
     # criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(resnet50_encoder.parameters(), lr=0.001)
-
     # Train the model
-    num_epochs = 100  # You can adjust the number of epochs as needed
-    model,train_losses = train_loop(resnet50_encoder, train_loader, criterion, optimizer, device, num_epochs)
+    num_epochs = 5  # You can adjust the number of epochs as needed
+    model,train_losses = train_loop(resnet50_encoder, train_loader, val_loader, criterion, optimizer, device, num_epochs)
 
     # model, epoch_history, loss_history, step_loss_history = train_model(resnet50_classifier, valloader, criterion, optimizer, num_epochs=100, device=device)
 
     # # Save the model 
 
-    torch.save(model.state_dict(), model_path/'mnist_model.pt')
+    torch.save(model.state_dict(), model_path/'mnist_model_Updated.pt')
 
 
     # Create a dictionary to store the collected results
@@ -76,7 +78,7 @@ if __name__ == "__main__":
     results_df = pd.DataFrame(results_dict)
 
     # Define the file path to write the DataFrame
-    output_file = result_path/'mnist_training_results.csv'
+    output_file = result_path/'mnist_training_results_updated.csv'
 
     # Write the DataFrame to a CSV file
     results_df.to_csv(output_file, index=False)

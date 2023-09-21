@@ -11,6 +11,7 @@ from dataloader import Custom3DShapesDataset,EfficientCustom3DShapesDataset
 from model import CNNEncoder,CNNClassifier
 from loss import BatchAllTtripletLoss
 import pandas as pd
+from utils import extract_and_visualize_embeddings
 
 # set device 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -22,12 +23,13 @@ with open('config.json') as json_file:
     fig_path =  Path(config['reporting']['figpath'])
     result_path = Path(config['reporting']['data'])
     model_path = Path(config['reporting']['model'])
+    animation_path = Path(config['reporting']['animation'])
 
 
-def train_loop(model, trainloader, criterion, optimizer, device, num_epochs=10, dim = None):
+def train_loop(model, trainloader, valloader, criterion, optimizer, device, num_epochs=10, dim = None):
     # Initialize a list to store training losses
     train_losses = []
-
+    counter = 0
     # Training loop
     for epoch in range(num_epochs):
         # Set model to training mode
@@ -60,8 +62,9 @@ def train_loop(model, trainloader, criterion, optimizer, device, num_epochs=10, 
             # Update the running loss
             running_train_loss += loss.item()
             num_train_batches += 1
-
-
+            class_labels = [str(i) for i in range(10)]  # Replace with your actual class labels if available
+            extract_and_visualize_embeddings(model, valloader, device, dim = None, counter = counter, class_labels = class_labels)
+            counter += 1
             # Print progress message every, say, 100 batches
             if (batch_idx + 1) % 100 == 0:
                 print(f"Epoch [{epoch + 1}/{num_epochs}] - Batch [{batch_idx + 1}/{len(trainloader)}] - "

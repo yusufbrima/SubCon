@@ -5,6 +5,7 @@ from PIL import Image
 from tqdm import tqdm  # Import the tqdm module
 import json 
 from pathlib import Path
+from sklearn.manifold import TSNE
 
 with open('config.json') as json_file:
     config = json.load(json_file)
@@ -13,6 +14,92 @@ with open('config.json') as json_file:
     fig_path =  Path(config['reporting']['figpath'])
     result_path = Path(config['reporting']['data'])
     model_path = Path(config['reporting']['model'])
+    animation_path = Path(config['reporting']['animation'])
+
+
+def create_animation(image_files, output_filename, duration=100):
+    # Open and append each image to an image list
+    images = []
+    for image_file in image_files:
+        img = Image.open(image_file)
+        images.append(img)
+
+    # Set the duration for each frame (in milliseconds)
+    # You can adjust this value to control the speed of the animation
+    for img in images:
+        img.info['duration'] = duration
+
+    # Save the image list as an animated GIF
+    images[0].save(output_filename, save_all=True, append_images=images[1:], loop=0)
+    
+def extract_and_visualize_embeddings(model, dataloader, device, dim=None, counter=0, class_labels=None):
+    # Set model to evaluation mode
+    model.eval()
+
+    # Initialize lists to store embeddings and labels
+    embeddings = []
+    labels = []
+
+    with torch.no_grad():
+        for inputs, targets in dataloader:
+            inputs = inputs.to(device)
+
+            # Extract embeddings from the model
+            if dim:
+                outputs = model(inputs)
+                embeddings.append(outputs.detach().cpu().numpy())
+                labels.append(targets[:, dim].to(torch.long()).numpy())
+            else:
+                embeddings.append(model(inputs).detach().cpu().numpy())
+                labels.append(targets.detach().numpy())
+
+    # Concatenate the lists into NumPy arrays
+    embeddings = np.vstack(embeddings)
+    labels = np.concatenate(labels)
+
+    # Apply t-SNE to reduce dimensionality to 2D
+    tsne = TSNE(n_components=2, random_state=42)
+    embeddings_2d = tsne.fit_transform(embeddings)
+
+    # Create a scatter plot of the embeddings
+    plt.figure(figsize=(8, 6))
+    scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap='tab10', alpha=0.7)
+
+    # Add a legend with class labels if available
+    if class_labels:
+        handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=scatter.get_cmap()(i), markersize=10,
+                               label=label) for i, label in enumerate(class_labels)]
+        plt.legend(handles=handles, title="Classes", loc='upper right')
+
+    # Add counter to the title
+    plt.title(f"t-SNE Embeddings (Iteration {counter})")
+    plt.colorbar()
+
+    # Save the plot as an image
+    plt.savefig(animation_path / f"tsne_embeddings_{counter}.png")
+    plt.close()
+
+
+
+def plot_samples_from_loader(loader, n_rows, n_cols):
+    # Get a batch of data from the loader
+    data_iterator = iter(loader)
+    images, labels = next(data_iterator)
+    
+    # Create a grid of subplots
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(10, 5))
+    
+    for i in range(n_rows):
+        for j in range(n_cols):
+            index = i * n_cols + j
+            if index < len(images):
+                ax = axes[i, j]
+                ax.imshow(images[index].squeeze(), cmap='gray')
+                ax.set_title(f"Label: {labels[index].item()}")
+                ax.axis('off')
+    
+    plt.subplots_adjust(wspace=0.5)
+    plt.show()
 
 def show_images_grid(imgs_, num_images=25, save_path=None):
     """

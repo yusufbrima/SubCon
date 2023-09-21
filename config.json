@@ -5,9 +5,10 @@
         "format": "file"
     },
     "reporting": {
-        "figpath": "./Figures",
-        "data": "./Data",
-        "model": "/net/projects/scratch/summer/valid_until_31_January_2024/ybrima/data/Models/SubspaceLearning"
+        "figpath": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Figures",
+        "data": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Data",
+        "model": "/net/projects/scratch/summer/valid_until_31_January_2024/ybrima/data/Models/SubspaceLearning",
+        "animation": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Anim"
     },
     "logging": {
         "log_level": "INFO",

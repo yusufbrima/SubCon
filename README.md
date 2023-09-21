@@ -1,16 +1,20 @@
 # Implementation for the Sub-Space Contrastive Representation Learning 
 
-## Sample Images
+## Sample Images from 3DShapes
 
 ![Alt Text](Figures/output_figure.png)
 
-## Conditioning on  shape type generative factor
+### Conditioning on  shape type generative factor
 
 ![Alt Text](Figures/output.gif)
 
-## Conditioning on floor hue
+### Conditioning on floor hue
 
 ![Alt Text](Figures/floor_hue.gif)
+
+## Training for triplet loss for MNIST
+
+![Alt Text](Figures/mnist_tripplet_animation.gif)
 
 ## Creating a Conda Environment from a YAML File
 
