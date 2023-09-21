@@ -31,7 +31,7 @@ def create_animation(image_files, output_filename, duration=100):
 
     # Save the image list as an animated GIF
     images[0].save(output_filename, save_all=True, append_images=images[1:], loop=0)
-    
+
 def extract_and_visualize_embeddings(model, dataloader, device, dim=None, counter=0, class_labels=None):
     # Set model to evaluation mode
     model.eval()
@@ -81,7 +81,7 @@ def extract_and_visualize_embeddings(model, dataloader, device, dim=None, counte
 
 
 
-def plot_samples_from_loader(loader, n_rows, n_cols):
+def plot_samples_from_loader(loader, n_rows, n_cols, save_path=None):
     # Get a batch of data from the loader
     data_iterator = iter(loader)
     images, labels = next(data_iterator)
@@ -99,6 +99,9 @@ def plot_samples_from_loader(loader, n_rows, n_cols):
                 ax.axis('off')
     
     plt.subplots_adjust(wspace=0.5)
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight', pad_inches=0)
     plt.show()
 
 def show_images_grid(imgs_, num_images=25, save_path=None):

@@ -9,7 +9,7 @@ import torchvision.models as models
 from torchvision import datasets, transforms
 from dataloader import Custom3DShapesDataset,EfficientCustom3DShapesDataset
 from model import CNNEncoder
-from loss import BatchAllTtripletLoss
+from loss import BatchAllTtripletLoss,SupervisedContrastiveLoss
 import pandas as pd
 from main import train_loop
 from sklearn.manifold import TSNE
@@ -55,8 +55,9 @@ if __name__ == "__main__":
 
 
 
-    criterion = BatchAllTtripletLoss() 
+    # criterion = BatchAllTtripletLoss() 
     # criterion = torch.nn.CrossEntropyLoss()
+    criterion = SupervisedContrastiveLoss()
     optimizer = torch.optim.Adam(resnet50_encoder.parameters(), lr=0.001)
     # Train the model
     num_epochs = 5  # You can adjust the number of epochs as needed
@@ -66,7 +67,7 @@ if __name__ == "__main__":
 
     # # Save the model 
 
-    torch.save(model.state_dict(), model_path/'mnist_model_Updated.pt')
+    torch.save(model.state_dict(), model_path/'mnist_model_scl.pt')
 
 
     # Create a dictionary to store the collected results
@@ -78,7 +79,7 @@ if __name__ == "__main__":
     results_df = pd.DataFrame(results_dict)
 
     # Define the file path to write the DataFrame
-    output_file = result_path/'mnist_training_results_updated.csv'
+    output_file = result_path/'mnist_training_results_scl.csv'
 
     # Write the DataFrame to a CSV file
     results_df.to_csv(output_file, index=False)

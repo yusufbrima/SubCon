@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 import scipy as sp
+from pytorch_metric_learning import losses
 
 eps = 1e-8 # a small number to prevent division by zero
 
@@ -45,61 +46,6 @@ def get_triplet_mask(labels):
 
   return mask
 
-
-
-def euclidean_distance_matrix(x, eps=1e-6):
-    """Efficient computation of Euclidean distance matrix
-    Args:
-        x: Input tensor of shape (batch_size, embedding_dim)
-        eps: Small constant to ensure numerical stability
-    
-    Returns:
-        Distance matrix of shape (batch_size, batch_size)
-    """
-    # Step 1 - Compute the dot product
-    dot_product = torch.mm(x, x.t())
-
-    # Step 2 - Extract the squared Euclidean norm from the diagonal
-    squared_norm = torch.diag(dot_product)
-
-    # Step 3 - Compute squared Euclidean distances
-    distance_matrix = squared_norm.unsqueeze(0) - 2 * dot_product + squared_norm.unsqueeze(1)
-
-    # Get rid of negative distances due to numerical instabilities
-    distance_matrix = torch.clamp(distance_matrix, min=0.0)  # Use torch.clamp instead of F.relu
-
-    # Step 4 - Compute the non-squared distances
-    mask = (distance_matrix == 0.0).float()
-
-    # Use this mask to set indices with a value of 0 to eps
-    distance_matrix += mask * eps
-
-    # Now it is safe to get the square root
-    distance_matrix = torch.sqrt(distance_matrix)
-
-    # Undo the trick for numerical stability
-    distance_matrix *= (1.0 - mask)
-
-    return distance_matrix
-
-def pairwise_dists(x, y):
-    """Computing pairwise distances using memory-efficient vectorization.
-
-    Parameters
-    ----------
-    x : torch.Tensor, shape=(M, D)
-    y : torch.Tensor, shape=(N, D)
-
-    Returns
-    -------
-    torch.Tensor, shape=(M, N)
-        The Euclidean distance between each pair of rows between `x` and `y`.
-    """
-    x_norm = torch.sum(x**2, dim=1, keepdim=True)
-    y_norm = torch.sum(y**2, dim=1, keepdim=True)
-    sqr_dists = x_norm - 2 * torch.mm(x, y.t()) + y_norm.t()
-    sqr_dists = torch.clamp(sqr_dists, min=0)  # Clip to prevent negative values
-    return torch.sqrt(sqr_dists)
 
 class BatchAllTtripletLoss(nn.Module):
   """Uses all valid triplets to compute Triplet loss
@@ -148,5 +94,47 @@ class BatchAllTtripletLoss(nn.Module):
     return triplet_loss
 
 
+class SupervisedContrastiveLoss(nn.Module):
+    def __init__(self, temperature=0.1):
+        """
+        Initialize the Supervised Contrastive Loss.
+
+        Args:
+            temperature (float): A hyperparameter that controls the scaling of the logits.
+                A higher temperature makes similarity scores more uniform, while a lower
+                temperature sharpens the differences.
+        """
+        super(SupervisedContrastiveLoss, self).__init__()
+        self.temperature = temperature
+
+    def forward(self, feature_vectors, labels):
+        """
+        Compute the Supervised Contrastive Loss.
+
+        Args:
+            feature_vectors (Tensor): The feature vectors to be embedded and compared.
+                Shape: (batch_size, embedding_dimension).
+            labels (Tensor): The corresponding class labels for each sample.
+                Shape: (batch_size,).
+
+        Returns:
+            Tensor: The computed loss value.
+        """
+        # Normalize feature vectors
+        feature_vectors_normalized = F.normalize(feature_vectors, p=2, dim=1)
+
+        # Compute similarity scores (logits)
+        logits = torch.div(
+            torch.matmul(
+                feature_vectors_normalized, torch.transpose(feature_vectors_normalized, 0, 1)
+            ),
+            self.temperature,
+        )
+
+        # Calculate the supervised contrastive loss using NTXentLoss
+        # Note: The implementation of NTXentLoss is not provided here.
+        # It is assumed to be an external loss function.
+        # Adjust the temperature value as needed.
+        return losses.NTXentLoss(temperature=0.07)(logits, torch.squeeze(labels))
 if __name__ == "__main__":
     pass

@@ -14,7 +14,11 @@
 
 ## Training for triplet loss for MNIST
 
-![Alt Text](Figures/mnist_tripplet_animation.gif)
+![Alt Text](Figures/mnist_tripplet_animation_advanced.gif)
+
+## Training for Supervised Contrastive loss for MNIST
+
+![Alt Text](Figures/mnist_scl_animation.gif)
 
 ## Creating a Conda Environment from a YAML File
 
