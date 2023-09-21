@@ -64,8 +64,11 @@ class BatchAllTtripletLoss(nn.Module):
     Returns:
       Scalar loss value.
     """
+
+    print("before distance matrix")
     # step 1 - get distance matrix
     distance_matrix = torch.cdist(embeddings, embeddings, p=2)
+    print("after distance matrix")
 
     # print('distance_matrix', distance_matrix)
 

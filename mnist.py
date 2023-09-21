@@ -7,7 +7,7 @@ import torch
 from torch.utils.data import DataLoader
 import torchvision.models as models
 from torchvision import datasets, transforms
-from dataloader import Custom3DShapesDataset,EfficientCustom3DShapesDataset
+from dataldr import Custom3DShapesDataset
 from model import CNNEncoder
 from loss import BatchAllTtripletLoss,SupervisedContrastiveLoss
 import pandas as pd
@@ -15,7 +15,7 @@ from main import train_loop
 from sklearn.manifold import TSNE
 
 # set device 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 with open('config.json') as json_file:
     config = json.load(json_file)
@@ -40,8 +40,8 @@ if __name__ == "__main__":
 
     # Create a DataLoader for the training dataset
     batch_size = 64  # You can adjust this batch size
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=8)
 
 
 
