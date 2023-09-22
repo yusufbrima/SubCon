@@ -46,7 +46,7 @@ def train_loop(model, trainloader, valloader, criterion, optimizer, device, num_
 
         for batch_idx, (inputs, labels) in enumerate(trainloader):
 
-            print("batch_idx", batch_idx)
+            # print("batch_idx", batch_idx)
 
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -61,7 +61,7 @@ def train_loop(model, trainloader, valloader, criterion, optimizer, device, num_
             if dim:
                 loss = criterion(outputs, labels[:, dim].to(torch.long))
             else:
-                loss = criterion(outputs, labels)#s.to(torch.long)
+                loss = criterion(outputs, labels)#.to(torch.long)
             
             # Backpropagation and optimization
             loss.backward()
