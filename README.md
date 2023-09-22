@@ -13,6 +13,18 @@
 ![Alt Text](Figures/floor_hue.gif)
 
 ## TNSE Visualization of training of MNIST with Triplet and Supervised Contrastive Learning Objectives
+
+<figure style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;">
+    <div style="width: 45%; box-sizing: border-box;">
+        <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" style="width: 100%; max-width: 100%; height: auto;">
+        <figcaption style="text-align: center; font-style: italic;">Caption for Image 1</figcaption>
+    </div>
+    <div style="width: 45%; box-sizing: border-box;">
+        <img src="Figures/mnist_scl_animation.gif" alt="Image 2" style="width: 100%; max-width: 100%; height: auto;">
+        <figcaption style="text-align: center; font-style: italic;">Caption for Image 2</figcaption>
+    </div>
+</figure>
+
 <figure style="display: flex; justify-content: space-between;">
         <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" style="width: 40%; max-width: 100%; height: auto;">
         <!-- <figcaption style="width: 45%; text-align: center; font-style: italic;">Training for triplet loss for MNIST</figcaption> -->
