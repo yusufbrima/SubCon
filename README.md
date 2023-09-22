@@ -13,7 +13,7 @@
 ## TNSE Visualization of training of MNIST with Triplet and Supervised Contrastive Learning Objectives
 <p float="left">
 <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" width="400">
-<img src="Figures/mnist_scl_animation.gif" alt="Image 2" width="400">
+<img src="Figures/mnist_supcon_animation.gif" alt="Image 2" width="400">
 </p>
 ## Creating a Conda Environment from a YAML File
 

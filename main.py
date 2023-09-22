@@ -9,7 +9,7 @@ import torchvision.models as models
 from torchvision import datasets, transforms
 from dataldr import Custom3DShapesDataset
 from model import CNNEncoder,CNNClassifier
-from loss import BatchAllTtripletLoss
+from losses import BatchAllTtripletLoss
 import pandas as pd
 from utils import extract_and_visualize_embeddings
 
@@ -56,7 +56,7 @@ def train_loop(model, trainloader, valloader, criterion, optimizer, device, num_
 
             # Forward pass
             outputs = model(inputs)
-            
+            bsz = inputs.size(0)
             # Calculate the loss
             if dim:
                 loss = criterion(outputs, labels[:, dim].to(torch.long))

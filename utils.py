@@ -6,6 +6,7 @@ from tqdm import tqdm  # Import the tqdm module
 import json 
 from pathlib import Path
 from sklearn.manifold import TSNE
+from sklearn.impute import SimpleImputer
 
 with open('config.json') as json_file:
     config = json.load(json_file)
@@ -55,6 +56,15 @@ def extract_and_visualize_embeddings(model, dataloader, device, dim=None, counte
 
     # Concatenate the lists into NumPy arrays
     embeddings = np.vstack(embeddings)
+    # Approach 1: Impute missing values with 0
+    # embeddings = np.nan_to_num(embeddings, nan=0.0)
+
+    # Approach 2: Impute missing values with the mean
+    # Create the imputer
+    # imputer = SimpleImputer(strategy='mean', missing_values=np.nan)
+
+    # Apply imputation along axis 1 (columns)
+    # embeddings = imputer.fit_transform(embeddings)
     labels = np.concatenate(labels)
 
     # Apply t-SNE to reduce dimensionality to 2D

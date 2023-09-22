@@ -9,7 +9,7 @@ import torchvision.models as models
 from torchvision import datasets, transforms
 from dataldr import Custom3DShapesDataset
 from model import CNNEncoder
-from loss import BatchAllTtripletLoss,SupervisedContrastiveLoss
+from losses import BatchAllTtripletLoss,SupervisedContrastiveLoss,SupConLoss
 import pandas as pd
 from main import train_loop
 from sklearn.manifold import TSNE
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # Example usage with ResNet-50 as the backbone and latent_dim=128
     latent_dim = 32
-    resnet50_encoder = CNNEncoder(models.resnet50,latent_dim  = latent_dim, input_shape= 1).to(device)
+    resnet50_encoder = CNNEncoder(models.resnet18,latent_dim  = latent_dim, input_shape= 1).to(device)
 
 
     # num_classes =  dataset._NUM_VALUES_PER_FACTOR['shape']
@@ -57,7 +57,8 @@ if __name__ == "__main__":
 
     # criterion = BatchAllTtripletLoss() 
     # criterion = torch.nn.CrossEntropyLoss()
-    criterion = SupervisedContrastiveLoss()
+    criterion = SupervisedContrastiveLoss(temperature=0.07)
+    # criterion = SupConLoss(temperature=0.07)
     optimizer = torch.optim.Adam(resnet50_encoder.parameters(), lr=0.001)
     # Train the model
     num_epochs = 5  # You can adjust the number of epochs as needed
