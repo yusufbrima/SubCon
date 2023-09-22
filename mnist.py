@@ -16,7 +16,7 @@ from sklearn.manifold import TSNE
 
 # set device 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-experiment_name = 'triplet'
+experiment_name = 'scl'
 with open('config.json') as json_file:
     config = json.load(json_file)
     data_folder = Path(config['dataset']['basepath'])
@@ -55,9 +55,9 @@ if __name__ == "__main__":
 
 
 
-    criterion = BatchAllTtripletLoss() 
+    # criterion = BatchAllTtripletLoss() 
     # criterion = torch.nn.CrossEntropyLoss()
-    # criterion = SupervisedContrastiveLoss()
+    criterion = SupervisedContrastiveLoss()
     optimizer = torch.optim.Adam(resnet50_encoder.parameters(), lr=0.001)
     # Train the model
     num_epochs = 5  # You can adjust the number of epochs as needed

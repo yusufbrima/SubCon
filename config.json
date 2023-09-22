@@ -8,7 +8,7 @@
         "figpath": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Figures",
         "data": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Data",
         "model": "/net/projects/scratch/summer/valid_until_31_January_2024/ybrima/data/Models/SubspaceLearning",
-        "animation": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Anim"
+        "animation": "/net/store/cv/users/ybrima/RTGCompCog/SubCon/Anim_SCL"
     },
     "logging": {
         "log_level": "INFO",
