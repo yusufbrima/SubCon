@@ -20,8 +20,8 @@
   <figcaption>Caption for Image 2</figcaption>
 </figure> -->
 <p float="left">
-<img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" width="100">
-<img src="Figures/mnist_scl_animation.gif" alt="Image 2" width="100">
+<img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" width="200">
+<img src="Figures/mnist_scl_animation.gif" alt="Image 2" width="200">
 </p>
 <figure style="display: flex; justify-content: space-between;">
         <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" style="width: 40%; max-width: 100%; height: auto;">
