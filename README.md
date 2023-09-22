@@ -25,15 +25,15 @@ In this guide, we'll walk you through the process of creating a Conda environmen
 
 #### Steps
 
-1. **Activate Conda**: Open your terminal and activate Conda if it's not already active. Replace `your_environment_name` with the desired environment name.
+1. **Create Conda**: Open your terminal and create Conda environment.
 
    ```shell
-   conda activate your_environment_name
+   conda env create -f environment.yml
    ```
 
 2. **Activate the New Environment**: Activate the newly created environment.
     ```shell
-    conda activate new_environment_name
+    conda activate subcon
     ```
 3. **Verify Installation**: You can verify that the environment was created successfully by checking its list of installed packages.
     ```shell
