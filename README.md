@@ -4,33 +4,17 @@
 
 ![Alt Text](Figures/output_figure.png)
 
-### Conditioning on  shape type generative factor
-
-![Alt Text](Figures/output.gif)
-
-### Conditioning on floor hue
-
-![Alt Text](Figures/floor_hue.gif)
+### Conditioning on  shape type generative factor and Conditioning on floor hue
+<p float="left">
+  <img src="Figures/output.gif" width="100" />
+  <img src="Figures/floor_hue.gif" width="100" /> 
+</p>
 
 ## TNSE Visualization of training of MNIST with Triplet and Supervised Contrastive Learning Objectives
-<!-- <figure>
-  <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" width="45%" style="margin-right: 5px;">
-  <img src="Figures/mnist_scl_animation.gif" alt="Image 2" width="45%">
-  <figcaption>Caption for Image 1</figcaption>
-  <figcaption>Caption for Image 2</figcaption>
-</figure> -->
 <p float="left">
 <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" width="200">
 <img src="Figures/mnist_scl_animation.gif" alt="Image 2" width="200">
 </p>
-<figure style="display: flex; justify-content: space-between;">
-        <img src="Figures/mnist_tripplet_animation_advanced.gif" alt="Image 1" style="width: 40%; max-width: 100%; height: auto;">
-        <!-- <figcaption style="width: 45%; text-align: center; font-style: italic;">Training for triplet loss for MNIST</figcaption> -->
-        <img src="Figures/mnist_scl_animation.gif" alt="Image 2" style="width: 40%; max-width: 100%; height: auto;">
-        <!-- <figcaption style="width: 45%; text-align: center; font-style: italic;">Training for Supervised Contrastive loss for MNIST</figcaption> -->
-</figure>
-
-
 ## Creating a Conda Environment from a YAML File
 
 In this guide, we'll walk you through the process of creating a Conda environment from a YAML file. This is useful for sharing or recreating environments with specific package dependencies.
